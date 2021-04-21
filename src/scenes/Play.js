@@ -33,5 +33,8 @@ class Play extends Phaser.Scene {
     update() {
         // scroll the starfield texture 
         this.starfield.tilePositionX -= 4;
+
+        // lets the rocket do stuff
+        this.p1Rocket.update();
     }
 }

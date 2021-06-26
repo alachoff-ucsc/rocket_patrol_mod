@@ -1,6 +1,6 @@
 class Menu extends Phaser.Scene {
     constructor() {
-        super("menuScene");
+        super('menuScene');
     }
     preload() {
         // load audio

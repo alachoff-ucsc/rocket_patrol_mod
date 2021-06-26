@@ -12,6 +12,3 @@ let keyF, keyR, keyLEFT, keyRIGHT, keyUP, keyDOWN;
 // set UI sizes
 let borderUISize = game.config.height / 15
 let borderPadding = borderUISize / 3
-
-// establish sound manager
-// let soundManager = new BaseSoundManager(game)

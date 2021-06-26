@@ -29,11 +29,14 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/2, game.config.height/2, 'Use <- -> arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor - '#00FF00';
         menuConfig.color = '#000';
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for Novice or → for Expert', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding + 30, 'Press ↑ or ↓ to change volume', menuConfig).setOrigin(0.5);
 
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
     }
 
     update() {
@@ -54,6 +57,14 @@ class Menu extends Phaser.Scene {
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyUP) && this.sound.volume <= 1) {
+            this.sound.volume += 0.1;
+            this.sound.play('sfx_select');
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN) && this.sound.volume >= 0) {
+            this.sound.volume -= 0.1;
+            this.sound.play('sfx_select');
         }
     }
 

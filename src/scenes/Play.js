@@ -55,12 +55,20 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig)
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+        // initialize topscore
+        if (typeof this.topScore === 'undefined') {
+            this.topScore = 0;
+        }
+        console.log(this.topScore);
+        // display topscore
+        this.scoreMiddle = this.add.text(game.config.width / 2, borderUISize + borderPadding*2, this.topScore, scoreConfig).setOrigin(0.5, 0);
+
 
         // GAME OVER flag
         this.gameOver = false;
 
-        // 60 second clock
+        // variable clock
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
@@ -72,12 +80,19 @@ class Play extends Phaser.Scene {
 
     update() {
         // restart if gameOver
-        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
-            this.scene.restart();
+        if (this.gameOver) {
+            if (this.p1Score > this.topScore) {
+                this.topScore = this.p1Score
+                console.log('new top score')
+            }
+            if (Phaser.Input.Keyboard.JustDown(keyR)) {
+                this.scene.restart();
+            }
+            else if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+                this.scene.start('menuScene')
+            }  
         }
-        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.scene.start('menuScene')
-        }
+        
         // scroll the starfield texture 
         this.starfield.tilePositionX -= 4;
 

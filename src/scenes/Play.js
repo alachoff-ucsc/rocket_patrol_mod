@@ -62,7 +62,20 @@ class Play extends Phaser.Scene {
         }
         console.log(this.topScore);
         // display topscore
-        this.scoreMiddle = this.add.text(game.config.width / 2, borderUISize + borderPadding*2, this.topScore, scoreConfig).setOrigin(0.5, 0);
+        this.scoreRight = this.add.text(game.config.width - borderUISize - borderPadding, borderUISize + borderPadding*2, this.topScore, scoreConfig).setOrigin(1, 0);
+        // initialize fireText
+        this.fireText = this.add.text(game.config.width / 2, borderUISize + borderPadding*2, 'FIRE', {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 100
+        }).setOrigin(0.5, 0);
 
 
         // GAME OVER flag
@@ -95,6 +108,14 @@ class Play extends Phaser.Scene {
         
         // scroll the starfield texture 
         this.starfield.tilePositionX -= 4;
+
+        // display FIRE text when firing
+        if (this.p1Rocket.isFiring) {
+            this.fireText.setVisible(true)
+        }
+        else {
+            this.fireText.setVisible(false)
+        }
 
         // updates spaceships x3
         if (!this.gameOver) {

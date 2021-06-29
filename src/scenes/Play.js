@@ -10,6 +10,8 @@ class Play extends Phaser.Scene {
         this.load.image('starfield', './assets/starfield.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+        // load bgm
+        this.load.audio('bgm', './assets/rocketpatrolbgm.wav')
     }
 
     create() {
@@ -22,6 +24,9 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, 0, borderUISize, game.config.width, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.width, 0xFFFFFF).setOrigin(0, 0);
+        // bgm
+        this.bgm = this.sound.add('bgm');
+        this.bgm.play({rate: game.settings.bgmRate, loop: true});
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
         // add spaceships (x3)
@@ -81,7 +86,7 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
 
-        // variable clock
+        // variable clock (for game over)
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
@@ -89,23 +94,45 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
         }, null, this);
 
+        // variable clock (halfway point)
+        this.halfpoint = false
+        this.speedUp = this.time.delayedCall(game.settings.gameTimer / 2, () => {
+            // increase ship speed
+            this.ship01.moveSpeed += 2
+            this.ship02.moveSpeed += 2
+            this.ship03.moveSpeed += 2
+            this.halfpoint = true;
+        }, null, this);
+
     }
 
     update() {
-        // restart if gameOver
+        // game over stuff
         if (this.gameOver) {
+            // slow music down
+            if (this.bgm.rate > 0.1) {
+                this.bgm.setRate(this.bgm.rate - 0.01)
+            }
+            // update topScore
             if (this.p1Score > this.topScore) {
                 this.topScore = this.p1Score
-                console.log('new top score')
             }
+            // restart
             if (Phaser.Input.Keyboard.JustDown(keyR)) {
                 this.scene.restart();
+                this.sound.stopAll();
             }
+            // to menu
             else if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
                 this.scene.start('menuScene')
+                this.sound.stopAll();
             }  
         }
-        
+        // increase bgm speed at halfway point
+        if (this.halfpoint && !this.gameOver && this.bgm.rate < game.settings.bgmRate + 0.2) {
+            this.bgm.setRate(this.bgm.rate + 0.01)
+        }
+
         // scroll the starfield texture 
         this.starfield.tilePositionX -= 4;
 

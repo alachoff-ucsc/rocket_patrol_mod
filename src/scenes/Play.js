@@ -7,7 +7,7 @@ class Play extends Phaser.Scene {
         // load images/tile sprites
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
-        this.load.image('starfield', './assets/starfield.png');
+        this.load.image('starfield', './assets/starfield_tile.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         // load bgm
@@ -15,8 +15,17 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        
+        // animate the tile sprite
+        this.anims.create({
+            key: 'stars',
+            frames: this.anims.generateFrameNumbers('starfield', { start: 0, end: 16, first: 0}),
+            frameRate: 4 * game.settings.bgmRate,
+            repeat: -1
+        });
         // place tile sprite for starfield
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+        this.starfield.anims.play('stars');
         // green UI background
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         // white borders
@@ -38,7 +47,7 @@ class Play extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        // animation config
+        // animation config for explosion
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
@@ -134,7 +143,8 @@ class Play extends Phaser.Scene {
         }
 
         // scroll the starfield texture 
-        this.starfield.tilePositionX -= 4;
+        this.starfield.tilePositionX -= 1;
+        this.starfield.tilePositionY -= 1;
 
         // display FIRE text when firing
         if (this.p1Rocket.isFiring) {

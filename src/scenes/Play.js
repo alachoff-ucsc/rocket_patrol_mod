@@ -7,8 +7,8 @@ class Play extends Phaser.Scene {
         // load images/tile sprites
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
-        this.load.image('starfield', './assets/starfield_tile.png');
-        // load spritesheet
+        // load spritesheets
+        this.load.spritesheet('starfield', './assets/starfield_tile.png', {frameWidth: 32, frameHeight: 32});
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         // load bgm
         this.load.audio('bgm', './assets/rocketpatrolbgm.wav')
@@ -19,13 +19,13 @@ class Play extends Phaser.Scene {
         // animate the tile sprite
         this.anims.create({
             key: 'stars',
-            frames: this.anims.generateFrameNumbers('starfield', { start: 0, end: 16, first: 0}),
+            frames: this.anims.generateFrameNumbers('starfield', { start: 0, end: 15 }),
             frameRate: 4 * game.settings.bgmRate,
             repeat: -1
         });
-        // place tile sprite for starfield
+        // place tile sprite for starfield and animate it
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
-        this.starfield.anims.play('stars');
+        // this.starfield.anims.play('stars');
         // green UI background
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         // white borders
@@ -74,7 +74,7 @@ class Play extends Phaser.Scene {
         if (typeof this.topScore === 'undefined') {
             this.topScore = 0;
         }
-        console.log(this.topScore);
+        // console.log(this.topScore);
         // display topscore
         this.scoreRight = this.add.text(game.config.width - borderUISize - borderPadding, borderUISize + borderPadding*2, this.topScore, scoreConfig).setOrigin(1, 0);
         // initialize fireText
@@ -137,6 +137,7 @@ class Play extends Phaser.Scene {
                 this.sound.stopAll();
             }  
         }
+
         // increase bgm speed at halfway point
         if (this.halfpoint && !this.gameOver && this.bgm.rate < game.settings.bgmRate + 0.2) {
             this.bgm.setRate(this.bgm.rate + 0.01)
